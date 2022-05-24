@@ -29,7 +29,7 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-    // get all order in order collection
+    // get order by filtering user email in order collection
     app.get("/order", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
@@ -55,6 +55,12 @@ async function run() {
     /* ----------- update api create --------*/
 
     /* ----------- delete api create --------*/
+    app.delete("/order/:id", async (req, res) => {
+      const id = req.params;
+      const query = { _id: ObjectId(id) };
+      const result = await orderCollection.deleteOne(query);
+      res.send(result);
+    });
   } finally {
     // await client.close();
   }
