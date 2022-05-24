@@ -20,6 +20,8 @@ async function run() {
   try {
     await client.connect();
     const productCollection = client.db("electric").collection("product");
+    const orderCollection = client.db("electric").collection("order");
+    /* ----------- get api create --------*/
     // get all product
     app.get("/product", async (req, res) => {
       const query = {};
@@ -34,6 +36,16 @@ async function run() {
       const result = await productCollection.findOne(query);
       res.send(result);
     });
+    /* ----------- post api create --------*/
+    app.post("/order", async (req, res) => {
+      const orderInformation = req.body;
+      const result = await orderCollection.insertOne(orderInformation);
+      res.send(result);
+    });
+
+    /* ----------- update api create --------*/
+
+    /* ----------- delete api create --------*/
   } finally {
     // await client.close();
   }
