@@ -22,13 +22,22 @@ async function run() {
     const productCollection = client.db("electric").collection("product");
     const orderCollection = client.db("electric").collection("order");
     /* ----------- get api create --------*/
-    // get all product
+    // get all product in product collection
     app.get("/product", async (req, res) => {
       const query = {};
       const cursor = productCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
     });
+    // get all order in order collection
+    app.get("/order", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const cursor = orderCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     // get single product by id
     app.get("/product/:id", async (req, res) => {
       const id = req.params;
