@@ -21,7 +21,10 @@ async function run() {
     await client.connect();
     const productCollection = client.db("electric").collection("product");
     const orderCollection = client.db("electric").collection("order");
+    const reviewCollection = client.db("electric").collection("review");
+
     /* ----------- get api create --------*/
+
     // get all product in product collection
     app.get("/product", async (req, res) => {
       const query = {};
@@ -29,6 +32,14 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+    // get single product by id a product collection
+    app.get("/product/:id", async (req, res) => {
+      const id = req.params;
+      const query = { _id: ObjectId(id) };
+      const result = await productCollection.findOne(query);
+      res.send(result);
+    });
+
     // get order by filtering user email in order collection
     app.get("/order", async (req, res) => {
       const email = req.query.email;
@@ -37,14 +48,14 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-
-    // get single product by id
-    app.get("/product/:id", async (req, res) => {
-      const id = req.params;
-      const query = { _id: ObjectId(id) };
-      const result = await productCollection.findOne(query);
+    // get all review in review collection
+    app.get("/review", async (req, res) => {
+      const query = {};
+      const cursor = reviewCollection.find(query);
+      const result = await cursor.toArray();
       res.send(result);
     });
+
     /* ----------- post api create --------*/
     app.post("/order", async (req, res) => {
       const orderInformation = req.body;
