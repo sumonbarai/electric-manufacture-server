@@ -57,9 +57,16 @@ async function run() {
     });
 
     /* ----------- post api create --------*/
+    // post data in order collection
     app.post("/order", async (req, res) => {
       const orderInformation = req.body;
       const result = await orderCollection.insertOne(orderInformation);
+      res.send(result);
+    });
+    // post data in review collection
+    app.post("/review", async (req, res) => {
+      const customerFeedback = req.body;
+      const result = await reviewCollection.insertOne(customerFeedback);
       res.send(result);
     });
 
