@@ -81,6 +81,22 @@ async function run() {
     });
 
     /* ----------- update api create --------*/
+    // update data by user in profileinformation collection
+    app.put("/profileinformation", async (req, res) => {
+      const email = req.query.email;
+      const updateData = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: updateData,
+      };
+      const result = await profileinformationCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
 
     /* ----------- delete api create --------*/
     app.delete("/order/:id", async (req, res) => {
