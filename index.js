@@ -3,6 +3,7 @@ require("dotenv").config();
 const app = express();
 const cors = require("cors");
 const port = process.env.PORT || 5000;
+const jwt = require("jsonwebtoken");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // middleware
@@ -25,6 +26,7 @@ async function run() {
     const profileinformationCollection = client
       .db("electric")
       .collection("profileinformation");
+    const userCollection = client.db("electric").collection("users");
 
     /* ----------- get api create --------*/
 
@@ -96,6 +98,23 @@ async function run() {
         options
       );
       res.send(result);
+    });
+    // update user email in database user when login or register
+    app.put("/users", async (req, res) => {
+      const email = req.query.email;
+      const tokenEmail = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: tokenEmail,
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
+      const assessToken = jwt.sign(
+        tokenEmail,
+        process.env.ASSESS_TOKEN_SECRET,
+        { expiresIn: "1d" }
+      );
+      res.send({ result, assessToken });
     });
 
     /* ----------- delete api create --------*/
