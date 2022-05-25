@@ -72,9 +72,15 @@ async function run() {
       const email = req.query.email;
       const query = { email: email };
       const user = await userCollection.findOne(query);
-      const isAdmin = user.roll === "admin";
-
+      const isAdmin = user?.roll === "admin";
       res.send({ admin: isAdmin });
+    });
+    // get all users in users collection
+    app.get("/user", async (req, res) => {
+      const query = {};
+      const cursor = userCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
     });
 
     /* ----------- post api create --------*/
@@ -125,6 +131,18 @@ async function run() {
         { expiresIn: "1d" }
       );
       res.send({ result, assessToken });
+    });
+    // update user roll in userCollection database
+    app.put("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const roll = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: roll,
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
     });
 
     /* ----------- delete api create --------*/
