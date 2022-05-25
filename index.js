@@ -67,6 +67,15 @@ async function run() {
       const result = await profileinformationCollection.findOne(query);
       res.send(result);
     });
+    // find users in users collection by search in email
+    app.get("/users", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const user = await userCollection.findOne(query);
+      const isAdmin = user.roll === "admin";
+
+      res.send({ admin: isAdmin });
+    });
 
     /* ----------- post api create --------*/
     // post data in order collection
@@ -83,6 +92,7 @@ async function run() {
     });
 
     /* ----------- update api create --------*/
+
     // update data by user in profileinformation collection
     app.put("/profileinformation", async (req, res) => {
       const email = req.query.email;
