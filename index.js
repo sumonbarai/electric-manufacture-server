@@ -22,6 +22,9 @@ async function run() {
     const productCollection = client.db("electric").collection("product");
     const orderCollection = client.db("electric").collection("order");
     const reviewCollection = client.db("electric").collection("review");
+    const profileinformationCollection = client
+      .db("electric")
+      .collection("profileinformation");
 
     /* ----------- get api create --------*/
 
@@ -53,6 +56,13 @@ async function run() {
       const query = {};
       const cursor = reviewCollection.find(query);
       const result = await cursor.toArray();
+      res.send(result);
+    });
+    // get single data by email in profileinformation collection
+    app.get("/profileinformation", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const result = await profileinformationCollection.findOne(query);
       res.send(result);
     });
 
