@@ -44,6 +44,13 @@ async function run() {
       const result = await productCollection.findOne(query);
       res.send(result);
     });
+    // get all order in order collection
+    app.get("/order", async (req, res) => {
+      const query = {};
+      const cursor = orderCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
     // get order by filtering user email in order collection
     app.get("/order", async (req, res) => {
