@@ -112,6 +112,22 @@ async function run() {
 
     /* ----------- update api create --------*/
 
+    // update order by searching order id and put status : success
+    app.put("/order/:id", async (req, res) => {
+      const id = req.params.id;
+      const paymentStatus = req.body;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: paymentStatus,
+      };
+      const result = await orderCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
     // update data by user in profileinformation collection
     app.put("/profileinformation", async (req, res) => {
       const email = req.query.email;
