@@ -96,6 +96,12 @@ async function run() {
       const result = await reviewCollection.insertOne(customerFeedback);
       res.send(result);
     });
+    // post data in product collection
+    app.post("/product", async (req, res) => {
+      const insertedProduct = req.body;
+      const result = await productCollection.insertOne(insertedProduct);
+      res.send(result);
+    });
 
     /* ----------- update api create --------*/
 
