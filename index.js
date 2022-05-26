@@ -146,10 +146,18 @@ async function run() {
     });
 
     /* ----------- delete api create --------*/
+    // order delete by id search
     app.delete("/order/:id", async (req, res) => {
       const id = req.params;
       const query = { _id: ObjectId(id) };
       const result = await orderCollection.deleteOne(query);
+      res.send(result);
+    });
+    // product delete by id search
+    app.delete("/product/:id", async (req, res) => {
+      const id = req.params;
+      const query = { _id: ObjectId(id) };
+      const result = await productCollection.deleteOne(query);
       res.send(result);
     });
   } finally {
