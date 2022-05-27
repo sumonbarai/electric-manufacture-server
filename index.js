@@ -5,6 +5,7 @@ const cors = require("cors");
 const port = process.env.PORT || 5000;
 const jwt = require("jsonwebtoken");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const stripe = require("stripe")(process.env.STRIP_SECRECT_KEY);
 
 // middleware
 app.use(cors());
@@ -51,9 +52,15 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-
+    // get single order data by id in orderCollection
+    app.get("/order/:id", async (req, res) => {
+      const id = req.params;
+      const query = { _id: ObjectId(id) };
+      const result = await orderCollection.findOne(query);
+      res.send(result);
+    });
     // get order by filtering user email in order collection
-    app.get("/order", async (req, res) => {
+    app.get("/myOrder", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
       const cursor = orderCollection.find(query);
@@ -188,6 +195,20 @@ async function run() {
       const query = { _id: ObjectId(id) };
       const result = await productCollection.deleteOne(query);
       res.send(result);
+    });
+
+    // strip er api code
+    app.post("/create-payment-intent", async (req, res) => {
+      const { price } = req.body;
+      const convertedPrice = price * 100;
+
+      // Create a PaymentIntent with the order amount and currency
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: convertedPrice,
+        currency: "usd",
+        payment_method_types: ["card"],
+      });
+      res.send({ clientSecret: paymentIntent.client_secret });
     });
   } finally {
     // await client.close();
