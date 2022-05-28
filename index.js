@@ -74,7 +74,7 @@ async function run() {
       res.send(result);
     });
     // get order by filtering user email in order collection
-    app.get("/myOrder", verifyJWT, async (req, res) => {
+    app.get("/myOrder", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
       const cursor = orderCollection.find(query);
@@ -89,7 +89,7 @@ async function run() {
       res.send(result);
     });
     // get single data by email in profileinformation collection
-    app.get("/profileinformation", verifyJWT, async (req, res) => {
+    app.get("/profileinformation", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
       const result = await profileinformationCollection.findOne(query);
