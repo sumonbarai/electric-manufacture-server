@@ -60,7 +60,7 @@ async function run() {
       res.send(result);
     });
     // get all order in order collection
-    app.get("/order", async (req, res) => {
+    app.get("/order", verifyJWT, async (req, res) => {
       const query = {};
       const cursor = orderCollection.find(query);
       const result = await cursor.toArray();
