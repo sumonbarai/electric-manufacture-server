@@ -10,6 +10,20 @@ const stripe = require("stripe")(process.env.STRIP_SECRECT_KEY);
 // middleware
 app.use(cors());
 app.use(express.json());
+function verifyJWT(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).send({ message: "Unauthorize access" });
+  }
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, process.env.ASSESS_TOKEN_SECRET, function (err, decoded) {
+    if (err) {
+      return res.status(403).send({ message: "Forbidden assess" });
+    }
+    req.decoded = decoded;
+    next();
+  });
+}
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.xkgus.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
@@ -32,7 +46,7 @@ async function run() {
     /* ----------- get api create --------*/
 
     // get all product in product collection
-    app.get("/product", async (req, res) => {
+    app.get("/product", verifyJWT, async (req, res) => {
       const query = {};
       const cursor = productCollection.find(query);
       const result = await cursor.toArray();
@@ -46,7 +60,7 @@ async function run() {
       res.send(result);
     });
     // get all order in order collection
-    app.get("/order", async (req, res) => {
+    app.get("/order", verifyJWT, async (req, res) => {
       const query = {};
       const cursor = orderCollection.find(query);
       const result = await cursor.toArray();
@@ -60,7 +74,7 @@ async function run() {
       res.send(result);
     });
     // get order by filtering user email in order collection
-    app.get("/myOrder", async (req, res) => {
+    app.get("/myOrder", verifyJWT, async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
       const cursor = orderCollection.find(query);
@@ -68,14 +82,14 @@ async function run() {
       res.send(result);
     });
     // get all review in review collection
-    app.get("/review", async (req, res) => {
+    app.get("/review", verifyJWT, async (req, res) => {
       const query = {};
       const cursor = reviewCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
     });
     // get single data by email in profileinformation collection
-    app.get("/profileinformation", async (req, res) => {
+    app.get("/profileinformation", verifyJWT, async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
       const result = await profileinformationCollection.findOne(query);
