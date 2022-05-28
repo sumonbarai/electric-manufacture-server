@@ -46,7 +46,7 @@ async function run() {
     /* ----------- get api create --------*/
 
     // get all product in product collection
-    app.get("/product", verifyJWT, async (req, res) => {
+    app.get("/product", async (req, res) => {
       const query = {};
       const cursor = productCollection.find(query);
       const result = await cursor.toArray();
@@ -60,7 +60,7 @@ async function run() {
       res.send(result);
     });
     // get all order in order collection
-    app.get("/order", verifyJWT, async (req, res) => {
+    app.get("/order", async (req, res) => {
       const query = {};
       const cursor = orderCollection.find(query);
       const result = await cursor.toArray();
@@ -82,7 +82,7 @@ async function run() {
       res.send(result);
     });
     // get all review in review collection
-    app.get("/review", verifyJWT, async (req, res) => {
+    app.get("/review", async (req, res) => {
       const query = {};
       const cursor = reviewCollection.find(query);
       const result = await cursor.toArray();
